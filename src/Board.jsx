@@ -7,6 +7,7 @@ function Board() {
     const [penSize, setPenSize] = useState(5);
     const [markerEnabled, setMarkerEnabled] = useState(false);
     const [isDrawing, setIsDrawing] = useState(false);
+    const [tool, setTool] = useState('pen');
     const [isAddingTextBox, setIsAddingTextBox] = useState(false);
     const [textContent, setTextContent] = useState('');
     const [isAddingStickyNote, setIsAddingStickyNote] = useState(false);
@@ -19,6 +20,7 @@ function Board() {
         console.log('Marker pressed!')
         setIsAddingStickyNote(false);
         setIsAddingTextBox(false);
+        setTool('pen');
         //displays where the user can choose their color and size
         //only then can they actually draw on the board
         setMarkerEnabled(true); //WHEN THE USER HITS ANYTHING ELSE = FALSE
@@ -42,6 +44,14 @@ function Board() {
         const ctx = canvas.getContext('2d');
         const { x, y } = getMousePos(e, canvas);
         setIsDrawing(true);
+        if(tool === 'eraser') {
+            ctx.globalCompositeOperation = 'destination-out';
+            ctx.lineWidth = penSize * 2;
+        } else {
+            ctx.globalCompositeOperation = 'source-over';
+            ctx.strokeStyle = penColor;
+            ctx.lineWidth = penSize;
+        }
         ctx.beginPath();
         ctx.moveTo(x, y);
     };
@@ -55,7 +65,26 @@ function Board() {
     };
     const stopDrawing = () => {
         setIsDrawing(false);
+        const ctx = canvasRef.current.getContext('2d');
+        ctx.globalCompositeOperation = 'source-over';
     };
+    const handleEraser = () => {
+        setTool('eraser');
+        setMarkerEnabled(true);
+    }
+    const handleClearBoard = () => {
+        //erases EVERYTHING, but for now just the marker (because that's what I have coded up)
+        //clearing marker
+        const canvas = canvasRef.current;
+        const ctx = canvasRef.current.getContext('2d');
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        //clearing text box
+        //clearing sticky note
+        //resetting any template
+
+        setIsDrawing(false);
+        setTool('marker');
+    }
 
     const handleTextBox = () => {
         console.log('Text box pressed!')
@@ -100,14 +129,17 @@ function Board() {
                     onMouseMove={draw}
                     onMouseUp={stopDrawing}
                     onMouseLeave={stopDrawing}
-                    style={{ cursor: markerEnabled ? 'crosshair' : 'default' }}
+                    style={{ cursor: tool === 'eraser' ? 'cell' : 'crosshair' }}
                 />
             </div>
-
             <div class="designBtns">
                 <button onClick={handleMarker}>Marker</button>
                 <button onClick={handleTextBox}>Text Box</button>
                 <button onClick={handleStickyNote}>Sticky Note</button>
+            </div>
+            <div class="eraseBtns">
+                <button onClick={handleEraser}>Eraser</button>
+                <button onClick={handleClearBoard}>Clear Board</button>
             </div>
             <div class="templateBtns">
                 <button>Use Template</button>
@@ -171,7 +203,5 @@ organization layouts (like a T chart), sticky notes, marker draw, etc.), a place
 board to their computer (download it somehow), a place to name it (for the download), and a place to upload
 previous boards */
 
-//TO ADD
-//a way that the user can erase/clear the board
 
 export default Board;

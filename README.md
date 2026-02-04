@@ -13,6 +13,7 @@ I got this idea as I finished writing the first draft of my new book (that I am 
 
 **How I used AI**
 * To guide me through setting up the development environment, making sure I got everything installed, etc.
+* Helping me get the user to actually be able to draw on the canvas and the stroke to not stop too soon before the border and with the eraser tool
 
 ## Contact
 * **Portfolio:** AudreyBurrell.github.io
