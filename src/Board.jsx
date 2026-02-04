@@ -8,13 +8,19 @@ function Board() {
     const [markerEnabled, setMarkerEnabled] = useState(false);
     const [isDrawing, setIsDrawing] = useState(false);
     const [tool, setTool] = useState('pen');
+
     const [isAddingTextBox, setIsAddingTextBox] = useState(false);
     const [textContent, setTextContent] = useState('');
+    const [textBoxes, setTextBoxes] = useState([]);
+    const [draggingTextBoxId, setDraggingTextBoxId] = useState(null);
+    const [dragOffset, setDragOffset] = useState({x: 0, y: 0})
+
     const [isAddingStickyNote, setIsAddingStickyNote] = useState(false);
     const [stickyNoteTextContent, setStickyNoteTextContent] = useState('');
     const [stickyNoteColor, setStickyNoteColor] = useState('#ffffff')
 
     const canvasRef = useRef(null);
+    const boardRef = useRef(null);
 
     const handleMarker = () => {
         console.log('Marker pressed!')
@@ -80,23 +86,69 @@ function Board() {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         //clearing text box
         //clearing sticky note
-        //resetting any template
+        //resetting any template/what was uploaded before
 
         setIsDrawing(false);
-        setTool('marker');
+        setTool('pen');
     }
 
+    
     const handleTextBox = () => {
         console.log('Text box pressed!')
         setMarkerEnabled(false);
         setIsAddingStickyNote(false);
+        setTool('text');
         //displays an area where the user can type something in a text box
         //and then they can drag it somewhere on the canvas
         setIsAddingTextBox(true);
     }
     const closeTextBox = () => {
         //eventually add dragging functionality here
-        setIsAddingTextBox(false);
+        if(textContent.trim() === '') {
+            setIsAddingTextBox(false);
+            return;
+        }
+        const newTextBox = {
+            id: Date.now(),
+            text: textContent,
+            x: 50,
+            y: 50
+        };
+        setTextBoxes(prev => [...prev, newTextBox]);
+        console.log(textBoxes);
+        setTextContent('');
+        setIsAddingTextBox(false); 
+    }
+    const handleDragTextBox = (e, box) => {
+        e.stopPropagation();
+        const boardRect = boardRef.current.getBoundingClientRect();
+        const mouseX = e.clientX - boardRect.left;
+        const mouseY = e.clientY - boardRect.top;
+        setDraggingTextBoxId(box.id);
+        setDragOffset({
+            x: mouseX - box.x,
+            y: mouseY - box.y
+        });
+    };
+    const handleTextBoxMove = (e) => {
+        if(draggingTextBoxId === null) return;
+        const boardRect = boardRef.current.getBoundingClientRect();
+        const mouseX = e.clientX - boardRect.left;
+        const mouseY = e.clientY - boardRect.top;
+        setTextBoxes(prev =>
+            prev.map(box =>
+                box.id === draggingTextBoxId
+                    ? {
+                        ...box,
+                        x: mouseX - dragOffset.x,
+                        y: mouseY - dragOffset.y
+                    }
+                    : box
+            )
+        );
+    };
+    const handleTextBoxUp = () => {
+        setDraggingTextBoxId(null);
     }
 
     
@@ -118,8 +170,12 @@ function Board() {
     return (
         <div>
             <div
+                ref={boardRef}
                 className="board"
-                style={{ border: '2px solid black', backgroundColor: 'white' }}
+                style={{ border: '2px solid black', backgroundColor: 'white', position: 'relative' }}
+                onMouseMove={handleTextBoxMove}
+                onMouseUp={handleTextBoxUp}
+                onMouseLeave={handleTextBoxUp}
             >
                 <canvas
                     ref={canvasRef}
@@ -130,22 +186,42 @@ function Board() {
                     onMouseUp={stopDrawing}
                     onMouseLeave={stopDrawing}
                     style={{ cursor: tool === 'eraser' ? 'cell' : 'crosshair' }}
+                    
                 />
+                {textBoxes.map((box) => (
+                    <div
+                        key={box.id}
+                        onMouseDown={(e) => handleDragTextBox(e, box)}
+                        style={{
+                            position: 'absolute',
+                            left: box.x,
+                            top: box.y,
+                            zIndex: 10,
+                            padding: '1px 5px',
+                            background: 'transparent',
+                            border: '1px dashed gray',
+                            cursor: 'move',
+                            userSelect: 'none'
+                        }}
+                    >
+                        {box.text}
+                    </div>
+                ))}
             </div>
-            <div class="designBtns">
+            <div className="designBtns">
                 <button onClick={handleMarker}>Marker</button>
                 <button onClick={handleTextBox}>Text Box</button>
                 <button onClick={handleStickyNote}>Sticky Note</button>
             </div>
-            <div class="eraseBtns">
+            <div className="eraseBtns">
                 <button onClick={handleEraser}>Eraser</button>
                 <button onClick={handleClearBoard}>Clear Board</button>
             </div>
-            <div class="templateBtns">
+            <div className="templateBtns">
                 <button>Use Template</button>
                 <button>Upload</button>
             </div>
-            <div class="saveBtn">
+            <div className="saveBtn">
                 <button>Download</button>
             </div>
             {markerEnabled && (
@@ -165,7 +241,7 @@ function Board() {
                 </div>
             )}
             {isAddingTextBox && (
-                <div className="popup-overlay" onClick={closeTextBox}>
+                <div className="popup-overlay">
                     <div className="popup-content" onClick={(e) => e.stopPropagation()}>
                         <h2>Add Text Box</h2>
                         <label>
