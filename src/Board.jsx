@@ -17,7 +17,10 @@ function Board() {
 
     const [isAddingStickyNote, setIsAddingStickyNote] = useState(false);
     const [stickyNoteTextContent, setStickyNoteTextContent] = useState('');
-    const [stickyNoteColor, setStickyNoteColor] = useState('#ffffff')
+    const [stickyNoteColor, setStickyNoteColor] = useState('#ffffff');
+    const [stickyNotes, setStickyNotes] = useState([]);
+    const [draggingStickyNoteId, setDraggingStickyNoteId] = useState(null);
+    const [dragStickyNoteOffset, setDragStickyNoteOffset] = useState({x:0, y:0});
 
     const canvasRef = useRef(null);
     const boardRef = useRef(null);
@@ -151,11 +154,18 @@ function Board() {
         setDraggingTextBoxId(null);
     }
 
-    
+    // const [isAddingStickyNote, setIsAddingStickyNote] = useState(false);
+    // const [stickyNoteTextContent, setStickyNoteTextContent] = useState('');
+    // const [stickyNoteColor, setStickyNoteColor] = useState('#ffffff');
+    // const [stickyNotes, setStickyNotes] = useState([]);
+    // const [draggingStickyNoteId, setDraggingStickyNoteId] = useState(null);
+    // const [dragStickyNoteOffset, setDragStickyNoteOffset] = useState({x:0, y:0});
+
     const handleStickyNote = () => {
         console.log('Sticky note pressed!');
         setMarkerEnabled(false);
         setIsAddingTextBox(false);
+        setTool('Sticky-Note');
         /*displays something very similar to text box only their text will appear on the front of 
         a colored stickynote. The color can also change. (so it's like a combination of marker and
         text box)*/
@@ -163,8 +173,56 @@ function Board() {
 
     }
     const closeStickyNote = () => {
+        if(stickyNoteTextContent.trim() === '') {
+            setIsAddingStickyNote(false);
+            return;
+        }
+        const newStickyNote = {
+            id: Date.now(),
+            text: stickyNoteTextContent,
+            color: stickyNoteColor,
+            x: 50,
+            y: 50
+        }
+        setStickyNotes(prev => [...prev, newStickyNote]);
+        console.log(stickyNotes);
+        setStickyNoteTextContent('');
         setIsAddingStickyNote(false);
     }
+    const handleDragStickyNote = (e, note) => {
+        e.stopPropagation();
+        const boardRect = boardRef.current.getBoundingClientRect();
+        const mouseX = e.clientX - boardRect.left;
+        const mouseY = e.clientY - boardRect.top;
+        setDraggingStickyNoteId(note.id);
+        setDragStickyNoteOffset({
+            x: mouseX - note.x,
+            y: mouseY - note.y
+        });
+    }
+    const handleStickyNoteMove = (e) => {
+        if(draggingStickyNoteId === null) return;
+        const boardRect = boardRef.current.getBoundingClientRect();
+        const mouseX = e.clientX - boardRect.left;
+        const mouseY = e.clientY - boardRect.top;
+        setStickyNotes(prev =>
+            prev.map(note =>
+                note.id === draggingStickyNoteId
+                    ? {
+                        ...note,
+                        x: mouseX - dragStickyNoteOffset.x,
+                        y: mouseY - dragStickyNoteOffset.y
+                    }
+                    : note
+            )
+        );
+    }
+    const handleStickyNoteUp = () => {
+        setDraggingStickyNoteId(null);
+    }
+
+    
+
     
 
     return (
@@ -173,9 +231,9 @@ function Board() {
                 ref={boardRef}
                 className="board"
                 style={{ border: '2px solid black', backgroundColor: 'white', position: 'relative' }}
-                onMouseMove={handleTextBoxMove}
-                onMouseUp={handleTextBoxUp}
-                onMouseLeave={handleTextBoxUp}
+                onMouseMove={handleStickyNoteMove} //NEED TO WRITE A FUNCTION THAT WILL DETERMINE WHICH TO DO
+                onMouseUp={handleStickyNoteUp}
+                onMouseLeave={handleStickyNoteUp}
             >
                 <canvas
                     ref={canvasRef}
@@ -205,6 +263,25 @@ function Board() {
                         }}
                     >
                         {box.text}
+                    </div>
+                ))}
+                {stickyNotes.map((note) => ( //NEED TO FIGURE OUT HOW TO MAKE THE SIZE OF THE STICKY NOTE
+                    <div
+                        key={note.id}
+                        onMouseDown={(e) => handleDragStickyNote(e, note)}
+                        style={{
+                            position: 'absolute',
+                            left: note.x,
+                            top: note.y,
+                            zIndex: 10,
+                            padding: '1px 5px',
+                            background: note.color,
+                            border: '1px dashed gray',
+                            cursor: 'move',
+                            userSelect: 'none'
+                        }}
+                    >
+                        {note.text}
                     </div>
                 ))}
             </div>
