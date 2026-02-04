@@ -11,6 +11,7 @@ function Board() {
 
     const [isAddingTextBox, setIsAddingTextBox] = useState(false);
     const [textContent, setTextContent] = useState('');
+    const [textBoxColor, setTextBoxColor] = useState('#000000');
     const [textBoxes, setTextBoxes] = useState([]);
     const [draggingTextBoxId, setDraggingTextBoxId] = useState(null);
     const [dragOffset, setDragOffset] = useState({x: 0, y: 0})
@@ -18,6 +19,7 @@ function Board() {
     const [isAddingStickyNote, setIsAddingStickyNote] = useState(false);
     const [stickyNoteTextContent, setStickyNoteTextContent] = useState('');
     const [stickyNoteColor, setStickyNoteColor] = useState('#ffffff');
+    const [stickyNoteTextColor, setStickyNoteTextColor] = useState('#000000');
     const [stickyNotes, setStickyNotes] = useState([]);
     const [draggingStickyNoteId, setDraggingStickyNoteId] = useState(null);
     const [dragStickyNoteOffset, setDragStickyNoteOffset] = useState({x:0, y:0});
@@ -114,6 +116,7 @@ function Board() {
         const newTextBox = {
             id: Date.now(),
             text: textContent,
+            textColor: textBoxColor,
             x: 50,
             y: 50
         };
@@ -154,13 +157,6 @@ function Board() {
         setDraggingTextBoxId(null);
     }
 
-    // const [isAddingStickyNote, setIsAddingStickyNote] = useState(false);
-    // const [stickyNoteTextContent, setStickyNoteTextContent] = useState('');
-    // const [stickyNoteColor, setStickyNoteColor] = useState('#ffffff');
-    // const [stickyNotes, setStickyNotes] = useState([]);
-    // const [draggingStickyNoteId, setDraggingStickyNoteId] = useState(null);
-    // const [dragStickyNoteOffset, setDragStickyNoteOffset] = useState({x:0, y:0});
-
     const handleStickyNote = () => {
         console.log('Sticky note pressed!');
         setMarkerEnabled(false);
@@ -181,6 +177,7 @@ function Board() {
             id: Date.now(),
             text: stickyNoteTextContent,
             color: stickyNoteColor,
+            textColor: stickyNoteTextColor,
             x: 50,
             y: 50
         }
@@ -221,6 +218,22 @@ function Board() {
         setDraggingStickyNoteId(null);
     }
 
+    const determineItemMove = (e) => {
+        if(tool == 'Sticky-Note') {
+            return handleStickyNoteMove(e);
+        } 
+        if(tool == 'text') {
+            return handleTextBoxMove(e);
+        }
+    }
+    const determineItemUp = () => {
+        if(tool == 'Sticky-Note') {
+            return handleStickyNoteUp();
+        }
+        if(tool == 'text') {
+            return handleTextBoxUp();
+        }
+    }
     
 
     
@@ -231,9 +244,9 @@ function Board() {
                 ref={boardRef}
                 className="board"
                 style={{ border: '2px solid black', backgroundColor: 'white', position: 'relative' }}
-                onMouseMove={handleStickyNoteMove} //NEED TO WRITE A FUNCTION THAT WILL DETERMINE WHICH TO DO
-                onMouseUp={handleStickyNoteUp}
-                onMouseLeave={handleStickyNoteUp}
+                onMouseMove={determineItemMove} //THIS DOESN'T WORK (it always drags (can't release the items))
+                onMouseUp={determineItemUp}
+                onMouseLeave={determineItemUp}
             >
                 <canvas
                     ref={canvasRef}
@@ -259,7 +272,8 @@ function Board() {
                             background: 'transparent',
                             border: '1px dashed gray',
                             cursor: 'move',
-                            userSelect: 'none'
+                            userSelect: 'none',
+                            color: box.textColor
                         }}
                     >
                         {box.text}
@@ -276,6 +290,7 @@ function Board() {
                             zIndex: 10,
                             padding: '1px 5px',
                             background: note.color,
+                            color: note.textColor,
                             border: '1px dashed gray',
                             cursor: 'move',
                             userSelect: 'none'
@@ -325,6 +340,10 @@ function Board() {
                             Text:
                             <input type="text" value={textContent} rows={4} placeholder="Enter your text..." onChange={(e) => setTextContent(e.target.value)} />
                         </label>
+                        <label>
+                            Text Color:
+                            <input type="color" value={textBoxColor} onChange={(e) => setTextBoxColor(e.target.value)} />
+                        </label>
                         <button onClick={closeTextBox}>Done</button>
                     </div>
                 </div>
@@ -336,6 +355,10 @@ function Board() {
                         <label>
                             Sticky Note Text:
                             <input type="text" value={stickyNoteTextContent} rows={4} placeholder="Enter your text..." onChange={(e) => setStickyNoteTextContent(e.target.value)} />
+                        </label>
+                        <label>
+                            Sticky Note Text Color:
+                            <input type="color" value={stickyNoteTextColor} onChange={(e) => setStickyNoteTextColor(e.target.value)} />
                         </label>
                         <label>
                             Sticky Note Color:
@@ -356,5 +379,6 @@ organization layouts (like a T chart), sticky notes, marker draw, etc.), a place
 board to their computer (download it somehow), a place to name it (for the download), and a place to upload
 previous boards */
 
+//TOO ADD: a way that the user can drag items into a "trashcan" because the eraser only erases marker
 
 export default Board;
