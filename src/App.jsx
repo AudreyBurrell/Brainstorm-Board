@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 
 import Board from './Board'
+import Login from './Login'
 
 function App() {
 
@@ -12,6 +13,7 @@ function App() {
       <Router>
         <Routes>
           <Route path="/" element={<Board />}/>
+          <Route path="/Login" element={<Login />} />
         </Routes>
       </Router>
     </div>

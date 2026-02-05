@@ -1,5 +1,6 @@
 import './Board.css'
 import { useState, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 function Board() {
     //getting functions ready for the marker, text box, and sticky note
@@ -429,10 +430,23 @@ function Board() {
         e.target.value = '';
     }
 
+    //login stuff
+    //nagivating
+    const navigate = useNavigate();
+    const handleLogin = () => {
+        navigate('/Login'); //state stuff can go in ehre too
+    }
+    //if the user is logged in, change the stuff that is displayed/enabled (see below)
+
     
 
     return (
         <div>
+            <div className="login-area">
+                {/* a button for login (leads to a login/create account screen) that will be replaced by the username if logged in */}
+                {/* if the user is logged in, enable a save button and then a button that can go to their library */}
+                <button onClick={handleLogin}>Login</button>
+            </div>
             <div
                 ref={boardRef}
                 className="canvas"
@@ -617,8 +631,6 @@ function Board() {
                     </div>
                 </div>
             )}
-
-
         </div>
     )
 }
