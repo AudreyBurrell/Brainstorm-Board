@@ -7,10 +7,11 @@ I got this idea as I finished writing the first draft of my new book (that I am 
 * **Draw on a canvas** -
 * **Add moveable text boxes and sticky notes**
 * **Select a template**
+* **Downloading the board**
+* **Uploading what was downloaded and then being able to edit it**
 
 ## Technologies Used
 * **React, HTML, CSS**
-* **Node.js**
 * **Claude.ai**
 
 **How I used AI**

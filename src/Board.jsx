@@ -628,8 +628,13 @@ organization layouts (like a T chart), sticky notes, marker draw, etc.), a place
 board to their computer (download it somehow), a place to name it (for the download), and a place to upload
 previous boards */
 
-//TO ADD: a way that the user can drag items into a "trashcan" because the eraser only erases marker
+//TO ADD: 
+// a way that the user can drag items into a "trashcan" because the eraser only erases marker
 //the eraser popup is the same thing as the marker popup
+
+//POTENTIALLY:
+/*a backend (so instead of just downloading/uploading, things can save to the backend if the user is logged in and the thing that
+will just save is the link that was created for easier handling)*/
 
 
 export default Board;
