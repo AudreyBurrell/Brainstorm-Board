@@ -280,7 +280,69 @@ function Board() {
                 ctx.lineTo(canvas.width, 50);
                 ctx.stroke();
                 break;
-            //OTHER CASES GO HERE
+            case 'grid':
+                for(let i = 50; i < canvas.height; i += 50) {
+                    ctx.beginPath();
+                    ctx.moveTo(0, i);
+                    ctx.lineTo(canvas.width, i);
+                    ctx.stroke();
+                }
+                for(let i = 50; i < canvas.width; i += 50) {
+                    ctx.beginPath();
+                    ctx.moveTo(i, 0);
+                    ctx.lineTo(i, canvas.height);
+                    ctx.stroke();
+                }
+                break;
+            case 'venn':
+                ctx.beginPath();
+                ctx.arc(300, 250, 200, 0, 2 * Math.PI);
+                ctx.stroke();
+                ctx.beginPath();
+                ctx.arc(500, 250, 200, 0, 2 * Math.PI);
+                ctx.stroke();
+                break;
+            case 'quadrants':
+                ctx.beginPath();
+                ctx.moveTo(canvas.width / 2, 0);
+                ctx.lineTo(canvas.width / 2, canvas.height);
+                ctx.stroke();
+                ctx.beginPath();
+                ctx.moveTo(0, canvas.height / 2);
+                ctx.lineTo(canvas.width, canvas.height / 2);
+                ctx.stroke();
+                break;
+            case 'timeline':
+                ctx.lineWidth = 3;
+                ctx.beginPath();
+                ctx.moveTo(50, canvas.height / 2);
+                ctx.lineTo(canvas.width - 50, canvas.height / 2);
+                ctx.stroke();
+                ctx.lineWidth = 2;
+                for(let i = 100; i < canvas.width - 50; i += 100) {
+                    ctx.beginPath();
+                    ctx.moveTo(i, canvas.height / 2 - 20);
+                    ctx.lineTo(i, canvas.height / 2 + 20);
+                    ctx.stroke();
+                }
+                break;
+            case 'mindmap':
+                ctx.beginPath();
+                ctx.arc(canvas.width / 2, canvas.height / 2, 60, 0, 2 * Math.PI);
+                ctx.stroke();
+                const branches = 6;
+                for(let i = 0; i < branches; i++) {
+                    const angle = (i / branches) * 2 * Math.PI;
+                    ctx.beginPath();
+                    ctx.moveTo(canvas.width / 2, canvas.height / 2);
+                    ctx.lineTo(
+                        canvas.width / 2 + Math.cos(angle) * 150,
+                        canvas.height / 2 + Math.sin(angle) * 150
+                    );
+                    ctx.stroke();
+                }
+                break;
+            
         }
         closeTemplate();
     }
@@ -443,6 +505,11 @@ function Board() {
                     <div className="popup-content" onClick={(e) => e.stopPropagation()}>
                         <h2>Choose a Template:</h2>
                         <button onClick={() => drawTemplate('tchart')}>T-Chart</button> 
+                        <button onClick={() => drawTemplate('grid')}>Grid</button>
+                        <button onClick={() => drawTemplate('venn')}>Venn Diagram</button>
+                        <button onClick={() => drawTemplate('quadrants')}>Four Quadrants</button>
+                        <button onClick={() => drawTemplate('timeline')}>Timeline</button>
+                        <button onClick={() => drawTemplate('mindmap')}>Mind Map</button>
                     </div>
                 </div>
             )}
