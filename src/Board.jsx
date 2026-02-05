@@ -233,20 +233,13 @@ function Board() {
     }
 
     const determineItemMove = (e) => {
-        if(tool == 'Sticky-Note') {
-            return handleStickyNoteMove(e);
-        } 
-        if(tool == 'text') {
-            return handleTextBoxMove(e);
-        }
+        handleStickyNoteMove(e);
+        handleTextBoxMove(e);
     }
+
     const determineItemUp = () => {
-        if(tool == 'Sticky-Note') {
-            return handleStickyNoteUp();
-        }
-        if(tool == 'text') {
-            return handleTextBoxUp();
-        }
+        handleStickyNoteUp();
+        handleTextBoxUp();
     }
 
     const closeEverything = () => {
@@ -524,9 +517,8 @@ function Board() {
                 </div>
                 <div className="templateBtns">
                     <button onClick={handleTemplate}>Use Template</button>
-                    {/* <button>Use Template</button> */}
                     <button onClick={handleOpenUpload}>Upload</button>
-                    {/*this thing is hidden */}
+                    {/*this thing is hidden and for the upload operation */}
                     <input 
                         type="file" 
                         ref={fileInputRef}
