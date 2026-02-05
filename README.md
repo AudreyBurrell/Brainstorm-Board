@@ -5,6 +5,7 @@ I got this idea as I finished writing the first draft of my new book (that I am 
 
 ## Features
 * **Draw on a canvas** -
+* **Add moveable text boxes and sticky notes**
 
 ## Technologies Used
 * **React, HTML, CSS**

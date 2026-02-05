@@ -15,6 +15,7 @@ function Board() {
     const [textBoxes, setTextBoxes] = useState([]);
     const [draggingTextBoxId, setDraggingTextBoxId] = useState(null);
     const [dragOffset, setDragOffset] = useState({x: 0, y: 0})
+    const [textBoxFontSize, setTextBoxFontSize] = useState('20');
 
     const [isAddingStickyNote, setIsAddingStickyNote] = useState(false);
     const [stickyNoteTextContent, setStickyNoteTextContent] = useState('');
@@ -23,6 +24,7 @@ function Board() {
     const [stickyNotes, setStickyNotes] = useState([]);
     const [draggingStickyNoteId, setDraggingStickyNoteId] = useState(null);
     const [dragStickyNoteOffset, setDragStickyNoteOffset] = useState({x:0, y:0});
+    const [stickyNoteTextSize, setStickyNoteTextSize] = useState('20');
 
     const canvasRef = useRef(null);
     const boardRef = useRef(null);
@@ -120,6 +122,7 @@ function Board() {
             id: Date.now(),
             text: textContent,
             textColor: textBoxColor,
+            fontSize: textBoxFontSize,
             x: 50,
             y: 50
         };
@@ -181,6 +184,7 @@ function Board() {
             text: stickyNoteTextContent,
             color: stickyNoteColor,
             textColor: stickyNoteTextColor,
+            fontSize: stickyNoteTextSize,
             x: 50,
             y: 50
         }
@@ -326,7 +330,8 @@ function Board() {
                             border: '1px dashed gray',
                             cursor: 'move',
                             userSelect: 'none',
-                            color: box.textColor
+                            color: box.textColor,
+                            fontSize: `${box.fontSize}px`,
                         }}
                     >
                         {box.text}
@@ -346,7 +351,8 @@ function Board() {
                             color: note.textColor,
                             border: '1px dashed gray',
                             cursor: 'move',
-                            userSelect: 'none'
+                            userSelect: 'none',
+                            fontSize: `${note.fontSize}px`
                         }}
                     >
                         {note.text}
@@ -400,6 +406,10 @@ function Board() {
                             Text Color:
                             <input type="color" value={textBoxColor} onChange={(e) => setTextBoxColor(e.target.value)} />
                         </label>
+                        <label>
+                            Text Size:
+                            <input type="range" min="1" max="72" value={textBoxFontSize} onChange={(e) => setTextBoxFontSize(e.target.value)} />
+                        </label>
                         <button onClick={closeTextBox}>Done</button>
                     </div>
                 </div>
@@ -415,6 +425,10 @@ function Board() {
                         <label>
                             Sticky Note Text Color:
                             <input type="color" value={stickyNoteTextColor} onChange={(e) => setStickyNoteTextColor(e.target.value)} />
+                        </label>
+                        <label>
+                            Text Size:
+                            <input type="range" min="1" max="72" value={stickyNoteTextSize} onChange={(e) => setStickyNoteTextSize(e.target.value)} />
                         </label>
                         <label>
                             Sticky Note Color:
