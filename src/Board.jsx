@@ -342,7 +342,11 @@ function Board() {
                     ctx.stroke();
                 }
                 break;
-            
+            case 'clear':
+                const canvas = templateCanvasRef.current;
+                const ctx = canvas.getContext('2d');
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                break;
         }
         closeTemplate();
     }
@@ -510,6 +514,7 @@ function Board() {
                         <button onClick={() => drawTemplate('quadrants')}>Four Quadrants</button>
                         <button onClick={() => drawTemplate('timeline')}>Timeline</button>
                         <button onClick={() => drawTemplate('mindmap')}>Mind Map</button>
+                        <button onClick={() => drawTemplate('clear')}>None</button>
                     </div>
                 </div>
             )}

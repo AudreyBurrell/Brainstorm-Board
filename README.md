@@ -6,6 +6,7 @@ I got this idea as I finished writing the first draft of my new book (that I am 
 ## Features
 * **Draw on a canvas** -
 * **Add moveable text boxes and sticky notes**
+* **Select a template**
 
 ## Technologies Used
 * **React, HTML, CSS**
@@ -17,7 +18,7 @@ I got this idea as I finished writing the first draft of my new book (that I am 
 * Helping me get the user to actually be able to draw on the canvas and the stroke to not stop too soon before the border and with the eraser tool
 * Dragging the text boxes
 * Creating a second canvas beneath the first one to hold all of the templates
-* The templates
+* The templates (minus the none template)
 
 ## Contact
 * **Portfolio:** AudreyBurrell.github.io
