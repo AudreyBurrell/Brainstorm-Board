@@ -19,6 +19,7 @@ I got this idea as I finished writing the first draft of my new book (that I am 
 * Dragging the text boxes
 * Creating a second canvas beneath the first one to hold all of the templates
 * The templates (minus the none template)
+* Getting the image stuff to turn into a link for download
 
 ## Contact
 * **Portfolio:** AudreyBurrell.github.io

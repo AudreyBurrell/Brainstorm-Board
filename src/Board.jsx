@@ -248,6 +248,8 @@ function Board() {
         setIsDrawing(false);
         setIsAddingTextBox(false);
         setMarkerEnabled(false);
+        setDownloadSelected(false);
+        setUploadSelected(false);
     }
     //templates
     const [choosingTemplate, isChoosingTemplate] = useState(false);
@@ -269,6 +271,7 @@ function Board() {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         ctx.strokeStyle = "#cccccc";
         ctx.lineWidth = 2;
+        setCurrentTemplate(template);
         switch(template) {
             case 'tchart':
                 ctx.beginPath();
@@ -346,7 +349,85 @@ function Board() {
         closeTemplate();
     }
 
+    //download
+    const [downloadSelected, setDownloadSelected] = useState(false);
+    const [boardName, setBoardName] = useState('');
+    const [downloadData, setDownloadData] = useState([]);
     
+    const handleOpenDownload = () => {
+        //a popup that displays so the user can name their board
+        setDownloadSelected(true);
+    }
+    const handleCloseDownload = () => {
+        setDownloadSelected(false);
+    }
+    const handleDownload = () => {
+        if(!boardName.trim()) {
+            alert('Please enter a name for your board');
+            return;
+        }
+        const canvas = canvasRef.current;
+        const canvasImage = canvas.toDataURL('image/png');
+        const boardData = {
+            boardName: boardName,
+            template: currentTemplate,
+            canvasImage: canvasImage,
+            textBoxes: textBoxes,
+            stickyNotes: stickyNotes
+        };
+        const jsonString = JSON.stringify(boardData);
+        const blob = new Blob([jsonString], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = `${boardName}.json`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
+        setBoardName('');
+        handleCloseDownload();
+    }
+
+    //upload
+    const [uploadSelected, setUploadSelected] = useState(false);
+    const [uploadData, setUploadData] = useState('');
+    const fileInputRef = useRef(null);
+
+    const handleOpenUpload = () => {
+        fileInputRef.current.click();
+    };
+    const handleUpload = (e) => {
+        const file = e.target.files[0];
+        if(!file) return;
+        const reader = new FileReader();
+        reader.onload = (event) => {
+            try {
+                const boardData = JSON.parse(event.target.result);
+                if(boardData.template && boardData.template !== 'none') {
+                    drawTemplate(boardData.template);
+                }
+                const img = new Image();
+                img.onload = () => {
+                    const canvas = canvasRef.current;
+                    const ctx = canvas.getContext('2d');
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+                    ctx.drawImage(img, 0, 0);
+                };
+                img.src = boardData.canvasImage;
+                setTextBoxes(boardData.textBoxes || []);
+                setStickyNotes(boardData.stickyNotes || []);
+                setBoardName(boardData.boardName || '');
+                setCurrentTemplate(boardData.template || 'none');
+                alert('Board loaded successfully')
+            } catch (error) {
+                alert('Error loading file');
+                console.error(error);
+            }
+        };
+        reader.readAsText(file);
+        e.target.value = '';
+    }
 
     
 
@@ -437,10 +518,18 @@ function Board() {
                 <div className="templateBtns">
                     <button onClick={handleTemplate}>Use Template</button>
                     {/* <button>Use Template</button> */}
-                    <button>Upload</button>
+                    <button onClick={handleOpenUpload}>Upload</button>
+                    {/*this thing is hidden */}
+                    <input 
+                        type="file" 
+                        ref={fileInputRef}
+                        accept=".json"
+                        onChange={handleUpload}
+                        style={{ display: 'none' }}
+                    />
                 </div>
                 <div className="saveBtn">
-                    <button>Download</button>
+                    <button onClick={handleOpenDownload}>Download</button>
                 </div>
             </div>
             {markerEnabled && (
@@ -514,6 +603,18 @@ function Board() {
                         <button onClick={() => drawTemplate('timeline')}>Timeline</button>
                         <button onClick={() => drawTemplate('mindmap')}>Mind Map</button>
                         <button onClick={() => drawTemplate('clear')}>None</button>
+                    </div>
+                </div>
+            )}
+            {downloadSelected && (
+                <div className="popup-overlay" onClick={handleCloseDownload}>
+                    <div className="popup-content" onClick={(e) => e.stopPropagation()}>
+                        <h2>Download board to computer</h2>
+                        <label>
+                            Enter a name for the board:
+                            <input type="text" value={boardName} rows={4} placeholder="Enter a name to download..." onChange={(e) => setBoardName(e.target.value)} />
+                        </label>
+                        <button onClick={handleDownload}>Done</button>
                     </div>
                 </div>
             )}
