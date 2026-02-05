@@ -26,6 +26,7 @@ function Board() {
 
     const canvasRef = useRef(null);
     const boardRef = useRef(null);
+    const templateCanvasRef = useRef(null);
 
     const handleMarker = () => {
         console.log('Marker pressed!')
@@ -90,7 +91,9 @@ function Board() {
         const ctx = canvasRef.current.getContext('2d');
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         //clearing text box
+        setTextBoxes([]);
         //clearing sticky note
+        setStickyNotes([]);
         //resetting any template/what was uploaded before
 
         setIsDrawing(false);
@@ -234,6 +237,50 @@ function Board() {
             return handleTextBoxUp();
         }
     }
+
+    const closeEverything = () => {
+        isChoosingTemplate(false);
+        setIsAddingStickyNote(false);
+        setIsDrawing(false);
+        setIsAddingTextBox(false);
+        setMarkerEnabled(false);
+    }
+    //templates
+    const [choosingTemplate, isChoosingTemplate] = useState(false);
+    const [currentTemplate, setCurrentTemplate] = useState('blank');
+    const [selectedTemplate, setSelectedTemplate] = useState(null);
+
+    const handleTemplate = () => {
+        closeEverything();
+        isChoosingTemplate(true);
+    }
+
+    const closeTemplate = () => {
+        isChoosingTemplate(false);
+    }
+
+    const drawTemplate = (template) => {
+        const canvas = templateCanvasRef.current;
+        const ctx = canvas.getContext('2d');
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.strokeStyle = "#cccccc";
+        ctx.lineWidth = 2;
+        switch(template) {
+            case 'tchart':
+                ctx.beginPath();
+                ctx.moveTo(canvas.width / 2, 0);
+                ctx.lineTo(canvas.width / 2, canvas.height);
+                ctx.stroke();
+                ctx.beginPath();
+                ctx.moveTo(0, 50);
+                ctx.lineTo(canvas.width, 50);
+                ctx.stroke();
+                break;
+            //OTHER CASES GO HERE
+        }
+        closeTemplate();
+    }
+
     
 
     
@@ -242,12 +289,18 @@ function Board() {
         <div>
             <div
                 ref={boardRef}
-                className="board"
-                style={{ border: '2px solid black', backgroundColor: 'white', position: 'relative' }}
+                className="canvas"
+                style={{ position: 'relative', width: '800px', height:'500px' }}
                 onMouseMove={determineItemMove} //THIS DOESN'T WORK (it always drags (can't release the items))
                 onMouseUp={determineItemUp}
                 onMouseLeave={determineItemUp}
             >
+                <canvas 
+                    ref={templateCanvasRef}
+                    width={800}
+                    height={500}
+                    style={{ position: 'absolute', top:0, left:0, zIndex:0 }}
+                />
                 <canvas
                     ref={canvasRef}
                     width={800}
@@ -256,7 +309,7 @@ function Board() {
                     onMouseMove={draw}
                     onMouseUp={stopDrawing}
                     onMouseLeave={stopDrawing}
-                    style={{ cursor: tool === 'eraser' ? 'cell' : 'crosshair' }}
+                    style={{ position: 'absolute', top:0, left:0, zIndex:1, border: '2px solid black', cursor: tool === 'eraser' ? 'cell' : 'crosshair' }}
                     
                 />
                 {textBoxes.map((box) => (
@@ -300,21 +353,24 @@ function Board() {
                     </div>
                 ))}
             </div>
-            <div className="designBtns">
-                <button onClick={handleMarker}>Marker</button>
-                <button onClick={handleTextBox}>Text Box</button>
-                <button onClick={handleStickyNote}>Sticky Note</button>
-            </div>
-            <div className="eraseBtns">
-                <button onClick={handleEraser}>Eraser</button>
-                <button onClick={handleClearBoard}>Clear Board</button>
-            </div>
-            <div className="templateBtns">
-                <button>Use Template</button>
-                <button>Upload</button>
-            </div>
-            <div className="saveBtn">
-                <button>Download</button>
+            <div className="btnGroups">
+                <div className="designBtns">
+                    <button onClick={handleMarker}>Marker</button>
+                    <button onClick={handleTextBox}>Text Box</button>
+                    <button onClick={handleStickyNote}>Sticky Note</button>
+                </div>
+                <div className="eraseBtns">
+                    <button onClick={handleEraser}>Eraser</button>
+                    <button onClick={handleClearBoard}>Clear Board</button>
+                </div>
+                <div className="templateBtns">
+                    <button onClick={handleTemplate}>Use Template</button>
+                    {/* <button>Use Template</button> */}
+                    <button>Upload</button>
+                </div>
+                <div className="saveBtn">
+                    <button>Download</button>
+                </div>
             </div>
             {markerEnabled && (
                 <div className="popup-overlay" onClick={closeMarkerPopup}>
@@ -368,6 +424,14 @@ function Board() {
                     </div>
                 </div>
             )}
+            {choosingTemplate && ( //eventually add images to these buttons of what the templates look like
+                <div className="popup-overlay" onClick={closeTemplate}>
+                    <div className="popup-content" onClick={(e) => e.stopPropagation()}>
+                        <h2>Choose a Template:</h2>
+                        <button onClick={() => drawTemplate('tchart')}>T-Chart</button> 
+                    </div>
+                </div>
+            )}
 
 
         </div>
@@ -379,6 +443,6 @@ organization layouts (like a T chart), sticky notes, marker draw, etc.), a place
 board to their computer (download it somehow), a place to name it (for the download), and a place to upload
 previous boards */
 
-//TOO ADD: a way that the user can drag items into a "trashcan" because the eraser only erases marker
+//TO ADD: a way that the user can drag items into a "trashcan" because the eraser only erases marker
 
 export default Board;

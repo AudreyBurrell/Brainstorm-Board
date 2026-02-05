@@ -15,6 +15,7 @@ I got this idea as I finished writing the first draft of my new book (that I am 
 * To guide me through setting up the development environment, making sure I got everything installed, etc.
 * Helping me get the user to actually be able to draw on the canvas and the stroke to not stop too soon before the border and with the eraser tool
 * Dragging the text boxes
+* Creating a second canvas beneath the first one to hold all of the templates
 
 ## Contact
 * **Portfolio:** AudreyBurrell.github.io
