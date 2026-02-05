@@ -97,8 +97,15 @@ function Board() {
         //clearing sticky note
         setStickyNotes([]);
         //resetting any template/what was uploaded before
+        const canvas2 = templateCanvasRef.current;
+        const ctx2 = templateCanvasRef.current.getContext('2d');
+        ctx2.clearRect(0, 0, canvas.width, canvas.height);
+        setCurrentTemplate('none');
 
         setIsDrawing(false);
+        setIsAddingTextBox(false);
+        setIsAddingStickyNote(false);
+        isChoosingTemplate(false);
         setTool('pen');
     }
 
@@ -253,7 +260,7 @@ function Board() {
     }
     //templates
     const [choosingTemplate, isChoosingTemplate] = useState(false);
-    const [currentTemplate, setCurrentTemplate] = useState('blank');
+    const [currentTemplate, setCurrentTemplate] = useState('none');
     const [selectedTemplate, setSelectedTemplate] = useState(null);
 
     const handleTemplate = () => {
@@ -631,5 +638,6 @@ previous boards */
 
 //TO ADD: a way that the user can drag items into a "trashcan" because the eraser only erases marker
 //the eraser popup is the same thing as the marker popup
+
 
 export default Board;
