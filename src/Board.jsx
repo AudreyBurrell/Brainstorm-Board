@@ -342,11 +342,6 @@ function Board() {
                     ctx.stroke();
                 }
                 break;
-            case 'clear':
-                const canvas = templateCanvasRef.current;
-                const ctx = canvas.getContext('2d');
-                ctx.clearRect(0, 0, canvas.width, canvas.height);
-                break;
         }
         closeTemplate();
     }
@@ -403,7 +398,7 @@ function Board() {
                         {box.text}
                     </div>
                 ))}
-                {stickyNotes.map((note) => ( //NEED TO FIGURE OUT HOW TO MAKE THE SIZE OF THE STICKY NOTE
+                {stickyNotes.map((note) => ( 
                     <div
                         key={note.id}
                         onMouseDown={(e) => handleDragStickyNote(e, note)}
@@ -412,13 +407,17 @@ function Board() {
                             left: note.x,
                             top: note.y,
                             zIndex: 10,
-                            padding: '1px 5px',
+                            padding: '10px',
                             background: note.color,
                             color: note.textColor,
-                            border: '1px dashed gray',
                             cursor: 'move',
                             userSelect: 'none',
-                            fontSize: `${note.fontSize}px`
+                            fontSize: `${note.fontSize}px`,
+                            width: '150px',
+                            height: '150px',
+                            boxShadow: '2px 2px 8px rgba(0,0,0,0.2)',
+                            overflow: 'auto',         
+                            wordWrap: 'break-word'
                         }}
                     >
                         {note.text}
@@ -494,7 +493,7 @@ function Board() {
                         </label>
                         <label>
                             Text Size:
-                            <input type="range" min="1" max="72" value={stickyNoteTextSize} onChange={(e) => setStickyNoteTextSize(e.target.value)} />
+                            <input type="range" min="1" max="20" value={stickyNoteTextSize} onChange={(e) => setStickyNoteTextSize(e.target.value)} />
                         </label>
                         <label>
                             Sticky Note Color:
@@ -530,5 +529,6 @@ board to their computer (download it somehow), a place to name it (for the downl
 previous boards */
 
 //TO ADD: a way that the user can drag items into a "trashcan" because the eraser only erases marker
+//the eraser popup is the same thing as the marker popup
 
 export default Board;
