@@ -1,5 +1,5 @@
 import './Board.css'
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 function Board() {
@@ -437,6 +437,56 @@ function Board() {
         navigate('/Login'); //state stuff can go in ehre too
     }
     //if the user is logged in, change the stuff that is displayed/enabled (see below)
+    const [loggedIn, isLoggedIn] = useState(false);
+    const [username, setUsername] = useState('');
+    useEffect(() => {
+        const userId = localStorage.getItem('userId');
+        if(userId) {
+            isLoggedIn(true);
+            setUsername(userId);
+        }
+    }, []);
+    const handleLogout = () => {
+        // const userId = localStorage.getItem('userId')
+        // localStorage.removeItem(`library_${userId}`);
+        localStorage.removeItem('userId');
+        isLoggedIn(false);
+    }
+    //library buttons
+    const [savingToLibrary, isSavingToLibrary] = useState(false);
+    //using the boardName, setBoardName thing from before
+    const handleOpenSaveToLibrary = () => {
+        isSavingToLibrary(true);
+    }
+    const handleCloseSaveLibrary = () => {
+        isSavingToLibrary(false);
+    }
+    const handleSaveLibrary = () => {
+        if(!boardName.trim()) {
+            alert('Please enter a name for your board');
+            return;
+        }
+        const canvas = canvasRef.current;
+        const canvasImage = canvas.toDataURL('image/png');
+        const boardData = {
+            boardName: boardName,
+            template: currentTemplate,
+            canvasImage: canvasImage,
+            textBoxes: textBoxes,
+            stickyNotes: stickyNotes
+        };
+        const jsonString = JSON.stringify(boardData);
+        const userId = localStorage.getItem('userId');
+        const library_key = `library_${userId}`;
+        const existing_library = localStorage.getItem(library_key);
+        const library = existing_library
+            ? JSON.parse(existing_library)
+            : [];
+        library.push(jsonString);
+        localStorage.setItem(library_key, JSON.stringify(library));
+        setBoardName('');
+        isSavingToLibrary(false);
+    }
 
     
 
@@ -445,7 +495,17 @@ function Board() {
             <div className="login-area">
                 {/* a button for login (leads to a login/create account screen) that will be replaced by the username if logged in */}
                 {/* if the user is logged in, enable a save button and then a button that can go to their library */}
-                <button onClick={handleLogin}>Login</button>
+                {/* <button onClick={handleLogin}>Login</button> */}
+                {!loggedIn ? (
+                    <button onClick={handleLogin}>Login</button>
+                ) : (
+                    <>
+                        <span className="username">
+                            {username}
+                        </span>
+                        <button onClick={handleLogout}>Logout</button>
+                    </>
+                )}
             </div>
             <div
                 ref={boardRef}
@@ -544,6 +604,12 @@ function Board() {
                 <div className="saveBtn">
                     <button onClick={handleOpenDownload}>Download</button>
                 </div>
+                {loggedIn && (
+                    <div className="libraryBtns">
+                        <button>Upload from Library</button>
+                        <button onClick={handleOpenSaveToLibrary}>Save to Library</button>
+                    </div>
+                )}
             </div>
             {markerEnabled && (
                 <div className="popup-overlay" onClick={closeMarkerPopup}>
@@ -628,6 +694,18 @@ function Board() {
                             <input type="text" value={boardName} rows={4} placeholder="Enter a name to download..." onChange={(e) => setBoardName(e.target.value)} />
                         </label>
                         <button onClick={handleDownload}>Done</button>
+                    </div>
+                </div>
+            )}
+            {savingToLibrary && (
+                <div className="popup-overlay" onClick={handleCloseSaveLibrary}>
+                    <div className="popup-content" onClick={(e) => e.stopPropagation()}>
+                        <h2>Save board to library for later access</h2>
+                        <label>
+                            Enter a name for the board:
+                            <input type="text" value={boardName} rows={4} placeholder="Enter a name to save..." onChange={(e) => setBoardName(e.target.value)} />
+                        </label>
+                        <button onClick={handleSaveLibrary}>Done</button>
                     </div>
                 </div>
             )}
