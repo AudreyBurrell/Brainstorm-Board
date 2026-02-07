@@ -475,17 +475,42 @@ function Board() {
             textBoxes: textBoxes,
             stickyNotes: stickyNotes
         };
-        const jsonString = JSON.stringify(boardData);
-        const userId = localStorage.getItem('userId');
-        const library_key = `library_${userId}`;
-        const existing_library = localStorage.getItem(library_key);
-        const library = existing_library
-            ? JSON.parse(existing_library)
-            : [];
-        library.push(jsonString);
-        localStorage.setItem(library_key, JSON.stringify(library));
+        const updatedBoards = {
+            ...boards,
+            [boardName]: boardData
+        };
+        getBoards(updatedBoards);
+        localStorage.setItem(`library_${userId}`, JSON.stringify(updatedBoards));
+        
+        // const jsonString = JSON.stringify(boardData);
+        // const userId = localStorage.getItem('userId');
+        // const library_key = `library_${userId}`;
+        // const existing_library = localStorage.getItem(library_key);
+        // const library = existing_library
+        //     ? JSON.parse(existing_library)
+        //     : [];
+        // library.push(jsonString);
+        // localStorage.setItem(library_key, JSON.stringify(library));
         setBoardName('');
         isSavingToLibrary(false);
+    }
+    //opening the library
+    const [openLibrary, isLibraryOpen] = useState(false);
+    const userId = localStorage.getItem('userId');
+    const [boards, getBoards] = useState(() => {
+        const board = localStorage.getItem(`library_${userId}`);
+        return board ? JSON.parse(board) : {};
+    })
+    const handleOpenLibrary = () => {
+        isLibraryOpen(true);
+    }
+    const handleLibraryClose = () => {
+        isLibraryOpen(false);
+    }
+    //console.log('Received boards:', boards);
+    const handleLoadBoard = (boardName) => {
+
+        isLibraryOpen(false);
     }
 
     
@@ -606,7 +631,7 @@ function Board() {
                 </div>
                 {loggedIn && (
                     <div className="libraryBtns">
-                        <button>Upload from Library</button>
+                        <button onClick={handleOpenLibrary}>Upload from Library</button>
                         <button onClick={handleOpenSaveToLibrary}>Save to Library</button>
                     </div>
                 )}
@@ -709,6 +734,29 @@ function Board() {
                     </div>
                 </div>
             )}
+            {openLibrary && (
+                <div className="popup-overlay" onClick={handleLibraryClose}>
+                    <div className="popup-content" onClick={(e) => e.stopPropagation()}>
+                        <h2>Select a Board</h2>
+                        <div className="board-list">
+                            {Object.keys(boards).length > 0 ? (
+                                Object.keys(boards).map((boardName) => (
+                                    <button
+                                        key={boardName}
+                                        onClick={() => handleLoadBoard(boardName)}
+                                        className="board-button"
+                                    >
+                                        {boardName}
+                                    </button>
+                                ))
+                            ) : (
+                                <p>No boards saved yet.</p>
+                            )}
+                        </div>
+                        <button onClick={handleLibraryClose}>Leave Library</button>
+                    </div>
+                </div>
+            )}
         </div>
     )
 }
@@ -718,9 +766,10 @@ organization layouts (like a T chart), sticky notes, marker draw, etc.), a place
 board to their computer (download it somehow), a place to name it (for the download), and a place to upload
 previous boards */
 
-//TO ADD: 
+//TO ADD/EDIT: 
 // a way that the user can drag items into a "trashcan" because the eraser only erases marker
 //the eraser popup is the same thing as the marker popup
+//update the close everything to actually close out every popup and then put that basically everywhere
 
 //POTENTIALLY:
 /*a backend (so instead of just downloading/uploading, things can save to the backend if the user is logged in and the thing that
