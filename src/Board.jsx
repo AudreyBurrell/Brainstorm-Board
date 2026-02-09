@@ -475,11 +475,17 @@ function Board() {
             textBoxes: textBoxes,
             stickyNotes: stickyNotes
         };
+        const jsonString = JSON.stringify(boardData);
         const updatedBoards = {
             ...boards,
-            [boardName]: boardData
+            [boardName]: jsonString
         };
-        getBoards(updatedBoards);
+        setBoards(updatedBoards);
+        // const updatedBoards = {
+        //     ...boards,
+        //     [boardName]: boardData
+        // };
+        // setBoards(updatedBoards);
         localStorage.setItem(`library_${userId}`, JSON.stringify(updatedBoards));
         
         // const jsonString = JSON.stringify(boardData);
@@ -497,7 +503,7 @@ function Board() {
     //opening the library
     const [openLibrary, isLibraryOpen] = useState(false);
     const userId = localStorage.getItem('userId');
-    const [boards, getBoards] = useState(() => {
+    const [boards, setBoards] = useState(() => {
         const board = localStorage.getItem(`library_${userId}`);
         return board ? JSON.parse(board) : {};
     })
@@ -509,9 +515,31 @@ function Board() {
     }
     //console.log('Received boards:', boards);
     const handleLoadBoard = (boardName) => {
-
-        isLibraryOpen(false);
-    }
+        const selectedBoard = boards[boardName];
+        try {
+            const board = JSON.parse(selectedBoard);
+            if(board.template && board.template!== 'none') {
+                drawTemplate(board.template);
+            }
+            const img = new Image();
+            img.onload = () => {
+                const canvas = canvasRef.current;
+                const ctx = canvas.getContext('2d');
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                ctx.drawImage(img, 0, 0);
+            };
+            img.src = board.canvasImage;
+            setTextBoxes(board.textBoxes || []);
+            setStickyNotes(board.stickyNotes || []);
+            setBoardName(board.boardName || '');
+            setCurrentTemplate(board.template || 'none');
+        } catch (error) {
+            alert('Error loading image'); //there is an error with showing the image. template and drawing shows up, not text box or sticky note
+            console.error(error);
+        }
+        
+        handleLibraryClose();
+    };
 
     
 
