@@ -24,6 +24,7 @@ I got this idea as I finished writing the first draft of my new book (that I am 
 * The templates (minus the none template)
 * Getting the image stuff to turn into a link for download
 * Getting the backend to work (I was mostly using backend code from previus projects as reference but it didn't work)
+* Helping me brainstorm how the eraser feature can delete text boxes and sticky notes
 
 ## Contact
 * **Portfolio:** AudreyBurrell.github.io

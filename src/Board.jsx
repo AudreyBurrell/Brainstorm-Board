@@ -580,7 +580,7 @@ function Board() {
                 {textBoxes.map((box) => (
                     <div
                         key={box.id}
-                        onMouseDown={(e) => handleDragTextBox(e, box)}
+                        onMouseDown={(e) => {if (tool !== 'eraser') handleDragTextBox(e, box)}}
                         style={{
                             position: 'absolute',
                             left: box.x,
@@ -593,15 +593,39 @@ function Board() {
                             userSelect: 'none',
                             color: box.textColor,
                             fontSize: `${box.fontSize}px`,
+                            cursor: tool === 'eraser' ? 'default' : 'move',
                         }}
                     >
+                        {tool === 'eraser' && (
+                            <button
+                                onClick={() => setTextBoxes(prev => prev.filter(b => b.id  !== box.id))}
+                                style={{
+                                    position:'absolute',
+                                    top:'-10px',
+                                    right:'-10px',
+                                    width:'20px',
+                                    height:'20px',
+                                    background:'#ff6b6b',
+                                    color:'white',
+                                    border: 'none',
+                                    borderRadius: '50%',
+                                    cursor:'pointer',
+                                    fontSize:'12px',
+                                    padding:0,
+                                    fontWeight:'bold',
+                                    zIndex:1000
+                                }}
+                            >
+                                x
+                            </button>
+                        )}
                         {box.text}
                     </div>
                 ))}
                 {stickyNotes.map((note) => ( 
                     <div
                         key={note.id}
-                        onMouseDown={(e) => handleDragStickyNote(e, note)}
+                        onMouseDown={(e) => { if (tool !== 'eraser') handleDragStickyNote(e, note)}}
                         style={{
                             position: 'absolute',
                             left: note.x,
@@ -610,7 +634,7 @@ function Board() {
                             padding: '10px',
                             background: note.color,
                             color: note.textColor,
-                            cursor: 'move',
+                            cursor: tool === 'eraser' ? 'default' : 'move',
                             userSelect: 'none',
                             fontSize: `${note.fontSize}px`,
                             width: '150px',
@@ -620,6 +644,29 @@ function Board() {
                             wordWrap: 'break-word'
                         }}
                     >
+                        {tool === 'eraser' && (
+                            <button
+                                onClick={() => setStickyNotes(prev => prev.filter(n => n.id !== note.id))}
+                                style={{
+                                    position: 'absolute',
+                                    top: '2px',
+                                    right: '2px',
+                                    width: '20px',
+                                    height: '20px',
+                                    background: '#ff6b6b',
+                                    color: 'white',
+                                    border: 'none',
+                                    borderRadius: '50%',
+                                    cursor: 'pointer',
+                                    fontSize: '12px',
+                                    padding: 0,
+                                    fontWeight: 'bold',
+                                    zIndex: 1000
+                                }}
+                            >
+                                x
+                            </button>
+                        )}
                         {note.text}
                     </div>
                 ))}
@@ -677,27 +724,6 @@ function Board() {
                         <button onClick={closeMarkerPopup}>Done</button>
                     </div>
                 </div>
-                // <div className="popup-overlay" onClick={handleLibraryClose}>
-                //     <div className="popup-content" onClick={(e) => e.stopPropagation()}>
-                //         <h2>Select a Board</h2>
-                //         <div className="board-list">
-                //             {Object.keys(boards).length > 0 ? (
-                //                 Object.keys(boards).map((boardName) => (
-                //                     <button
-                //                         key={boardName}
-                //                         onClick={() => handleLoadBoard(boardName)}
-                //                         className="board-button"
-                //                     >
-                //                         {boardName}
-                //                     </button>
-                //                 ))
-                //             ) : (
-                //                 <p>No boards saved yet.</p>
-                //             )}
-                //         </div>
-                //         <button onClick={handleLibraryClose}>Leave Library</button>
-                //     </div>
-                // </div>
             )}
             {isAddingTextBox && (
                 <div className="popup-overlay">
@@ -733,7 +759,7 @@ function Board() {
                         </label>
                         <label>
                             Text Size:
-                            <input type="range" min="1" max="20" value={stickyNoteTextSize} onChange={(e) => setStickyNoteTextSize(e.target.value)} />
+                            <input type="range" min="10" max="40" value={stickyNoteTextSize} onChange={(e) => setStickyNoteTextSize(e.target.value)} />
                         </label>
                         <label>
                             Sticky Note Color:
@@ -812,10 +838,5 @@ function Board() {
 organization layouts (like a T chart), sticky notes, marker draw, etc.), a place for them to save their 
 board to their computer (download it somehow), a place to name it (for the download), and a place to upload
 previous boards */
-
-//TO ADD/EDIT: 
-// a way that the user can drag items into a "trashcan" because the eraser only erases marker
-
-
 
 export default Board;
