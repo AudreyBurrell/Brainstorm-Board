@@ -10,6 +10,8 @@ function Board() {
     const [isDrawing, setIsDrawing] = useState(false);
     const [tool, setTool] = useState('pen');
 
+    const [eraserEnabled, setEraserEnabled] = useState(false);
+
     const [isAddingTextBox, setIsAddingTextBox] = useState(false);
     const [textContent, setTextContent] = useState('');
     const [textBoxColor, setTextBoxColor] = useState('#000000');
@@ -86,6 +88,7 @@ function Board() {
         closeEverything();
         setTool('eraser');
         setMarkerEnabled(true);
+        setEraserEnabled(true);
     }
     const handleClearBoard = () => {
         //erases EVERYTHING, but for now just the marker (because that's what I have coded up)
@@ -251,6 +254,7 @@ function Board() {
         setUploadSelected(false);
         isLibraryOpen(false);
         setUploadSelected(false);
+        setEraserEnabled(false);
     }
     //templates
     const [choosingTemplate, isChoosingTemplate] = useState(false);
@@ -655,11 +659,17 @@ function Board() {
             {markerEnabled && (
                 <div className="popup-overlay" onClick={closeMarkerPopup}>
                     <div className="popup-content" onClick={(e) => e.stopPropagation()}>
-                        <h2>Marker Settings</h2>
-                        <label>
-                            Color:
-                            <input type="color" value={penColor} onChange={(e) => setPenColor(e.target.value)} />
-                        </label> 
+                        {eraserEnabled ? (
+                            <h2>Eraser Settings</h2>
+                        ) : (
+                            <>
+                                <h2>Marker Settings</h2>
+                                <label>
+                                    Color:
+                                    <input type="color" value={penColor} onChange={(e) => setPenColor(e.target.value)} />
+                                </label> 
+                            </>
+                        )}
                         <label>
                             Size:
                             <input type="range" min="1" max="20" value={penSize} onChange={(e) => setPenSize(e.target.value)} />
@@ -667,6 +677,27 @@ function Board() {
                         <button onClick={closeMarkerPopup}>Done</button>
                     </div>
                 </div>
+                // <div className="popup-overlay" onClick={handleLibraryClose}>
+                //     <div className="popup-content" onClick={(e) => e.stopPropagation()}>
+                //         <h2>Select a Board</h2>
+                //         <div className="board-list">
+                //             {Object.keys(boards).length > 0 ? (
+                //                 Object.keys(boards).map((boardName) => (
+                //                     <button
+                //                         key={boardName}
+                //                         onClick={() => handleLoadBoard(boardName)}
+                //                         className="board-button"
+                //                     >
+                //                         {boardName}
+                //                     </button>
+                //                 ))
+                //             ) : (
+                //                 <p>No boards saved yet.</p>
+                //             )}
+                //         </div>
+                //         <button onClick={handleLibraryClose}>Leave Library</button>
+                //     </div>
+                // </div>
             )}
             {isAddingTextBox && (
                 <div className="popup-overlay">
@@ -784,7 +815,6 @@ previous boards */
 
 //TO ADD/EDIT: 
 // a way that the user can drag items into a "trashcan" because the eraser only erases marker
-//the eraser popup is the same thing as the marker popup
 
 
 
