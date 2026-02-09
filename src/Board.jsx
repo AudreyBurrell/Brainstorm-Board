@@ -33,8 +33,7 @@ function Board() {
 
     const handleMarker = () => {
         console.log('Marker pressed!')
-        setIsAddingStickyNote(false);
-        setIsAddingTextBox(false);
+        closeEverything();
         setTool('pen');
         //displays where the user can choose their color and size
         //only then can they actually draw on the board
@@ -84,6 +83,7 @@ function Board() {
         ctx.globalCompositeOperation = 'source-over';
     };
     const handleEraser = () => {
+        closeEverything();
         setTool('eraser');
         setMarkerEnabled(true);
     }
@@ -113,8 +113,7 @@ function Board() {
     
     const handleTextBox = () => {
         console.log('Text box pressed!')
-        setMarkerEnabled(false);
-        setIsAddingStickyNote(false);
+        closeEverything();
         setTool('text');
         //displays an area where the user can type something in a text box
         //and then they can drag it somewhere on the canvas
@@ -173,8 +172,7 @@ function Board() {
 
     const handleStickyNote = () => {
         console.log('Sticky note pressed!');
-        setMarkerEnabled(false);
-        setIsAddingTextBox(false);
+        closeEverything();
         setTool('Sticky-Note');
         /*displays something very similar to text box only their text will appear on the front of 
         a colored stickynote. The color can also change. (so it's like a combination of marker and
@@ -250,6 +248,8 @@ function Board() {
         setIsAddingTextBox(false);
         setMarkerEnabled(false);
         setDownloadSelected(false);
+        setUploadSelected(false);
+        isLibraryOpen(false);
         setUploadSelected(false);
     }
     //templates
@@ -357,6 +357,7 @@ function Board() {
     
     const handleOpenDownload = () => {
         //a popup that displays so the user can name their board
+        closeEverything();
         setDownloadSelected(true);
     }
     const handleCloseDownload = () => {
@@ -396,6 +397,7 @@ function Board() {
     const fileInputRef = useRef(null);
 
     const handleOpenUpload = () => {
+        closeEverything();
         fileInputRef.current.click();
     };
     const handleUpload = (e) => {
@@ -456,6 +458,7 @@ function Board() {
     const [savingToLibrary, isSavingToLibrary] = useState(false);
     //using the boardName, setBoardName thing from before
     const handleOpenSaveToLibrary = () => {
+        closeEverything();
         isSavingToLibrary(true);
     }
     const handleCloseSaveLibrary = () => {
@@ -481,22 +484,7 @@ function Board() {
             [boardName]: jsonString
         };
         setBoards(updatedBoards);
-        // const updatedBoards = {
-        //     ...boards,
-        //     [boardName]: boardData
-        // };
-        // setBoards(updatedBoards);
         localStorage.setItem(`library_${userId}`, JSON.stringify(updatedBoards));
-        
-        // const jsonString = JSON.stringify(boardData);
-        // const userId = localStorage.getItem('userId');
-        // const library_key = `library_${userId}`;
-        // const existing_library = localStorage.getItem(library_key);
-        // const library = existing_library
-        //     ? JSON.parse(existing_library)
-        //     : [];
-        // library.push(jsonString);
-        // localStorage.setItem(library_key, JSON.stringify(library));
         setBoardName('');
         isSavingToLibrary(false);
     }
@@ -508,6 +496,7 @@ function Board() {
         return board ? JSON.parse(board) : {};
     })
     const handleOpenLibrary = () => {
+        closeEverything();
         isLibraryOpen(true);
     }
     const handleLibraryClose = () => {
@@ -537,7 +526,6 @@ function Board() {
             alert('Error loading image'); //there is an error with showing the image. template and drawing shows up, not text box or sticky note
             console.error(error);
         }
-        
         handleLibraryClose();
     };
 
@@ -797,11 +785,7 @@ previous boards */
 //TO ADD/EDIT: 
 // a way that the user can drag items into a "trashcan" because the eraser only erases marker
 //the eraser popup is the same thing as the marker popup
-//update the close everything to actually close out every popup and then put that basically everywhere
 
-//POTENTIALLY:
-/*a backend (so instead of just downloading/uploading, things can save to the backend if the user is logged in and the thing that
-will just save is the link that was created for easier handling)*/
 
 
 export default Board;
