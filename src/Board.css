@@ -1,9 +1,289 @@
-.board {
-  padding: 0;
+/* Board.css */
+
+body {
   margin: 0;
+  padding: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+}
+
+/* Main container - flexbox layout */
+body > div > div:first-child {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+/* Login area at top */
+.login-area {
+  background-color: #2c3e50;
+  padding: 12px 20px;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 12px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  flex-shrink: 0;
+  z-index: 100;
+}
+
+.username {
+  color: #ecf0f1;
+  font-weight: 600;
+  padding: 8px 16px;
+  background-color: #34495e;
+  border-radius: 4px;
+}
+
+/* Main content area - horizontal flex */
+.login-area + div {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+}
+
+/* Canvas section - left side, takes most space */
+/* .canvas-section {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #f5f5f5;
+  padding: 20px;
+  overflow: auto;
+}
+
+.canvas {
+  position: relative;
+  width: 800px;
+  height: 500px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  background-color: white;
+} */
+
+/* Sidebar - right side */
+.side-bar {
+  width: 260px;
+  background-color: #34495e;
+  padding: 20px;
+  box-shadow: -2px 0 8px rgba(0, 0, 0, 0.1);
+  overflow-y: auto;
+  flex-shrink: 0;
+}
+
+/* Button groups in sidebar */
+.btnGroups {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.designBtns,
+.eraseBtns,
+.downloadBtns,
+.libraryBtns {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* Section labels */
+.designBtns::before {
+  content: 'Tools';
+  color: #95a5a6;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 4px;
+}
+
+.eraseBtns::before {
+  content: 'Edit';
+  color: #95a5a6;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 4px;
+}
+
+.downloadBtns::before {
+  content: 'File';
+  color: #95a5a6;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 4px;
+}
+
+.libraryBtns::before {
+  content: 'Library';
+  color: #95a5a6;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 4px;
+}
+
+/* Button styling */
+button {
+  padding: 12px 16px;
+  background-color: #5a6c7d;
+  color: white;
   border: none;
-  display: inline-block;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+button:hover {
+  background-color: #2980b9;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(52, 152, 219, 0.3);
+}
+
+button:active {
+  transform: translateY(0);
+}
+
+/* Login button styling */
+.login-area button {
+  padding: 8px 16px;
+  font-size: 13px;
 }
 
 
 
+/* Popup overlay */
+.popup-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  backdrop-filter: blur(2px);
+}
+
+.popup-content {
+  background-color: white;
+  padding: 30px;
+  border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  min-width: 320px;
+  max-width: 500px;
+  max-height: 80vh;
+  overflow-y: auto;
+}
+
+.popup-content h2 {
+  margin-top: 0;
+  margin-bottom: 20px;
+  color: #2c3e50;
+  font-size: 20px;
+}
+
+.popup-content label {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 16px;
+  color: #34495e;
+  font-weight: 500;
+  gap: 8px;
+  font-size: 14px;
+}
+
+.popup-content input[type="text"] {
+  padding: 10px 12px;
+  border: 2px solid #bdc3c7;
+  border-radius: 6px;
+  font-size: 14px;
+  font-family: inherit;
+}
+
+.popup-content input[type="text"]:focus {
+  outline: none;
+  border-color: #3498db;
+}
+
+.popup-content input[type="color"] {
+  height: 40px;
+  border: 2px solid #bdc3c7;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.popup-content input[type="range"] {
+  cursor: pointer;
+}
+
+.popup-content button {
+  margin-top: 8px;
+  width: 100%;
+}
+
+/* Board list in library popup */
+.board-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 16px;
+  max-height: 300px;
+  overflow-y: auto;
+  padding: 4px;
+}
+
+.board-button {
+  background-color: #ecf0f1;
+  color: #2c3e50;
+  text-align: left;
+  padding: 14px 16px;
+  font-weight: 500;
+}
+
+.board-button:hover {
+  background-color: #3498db;
+  color: white;
+  transform: translateX(4px);
+}
+
+.board-list p {
+  color: #7f8c8d;
+  text-align: center;
+  padding: 20px;
+  margin: 0;
+}
+
+/* Scrollbar styling for sidebar and popups */
+.side-bar::-webkit-scrollbar,
+.board-list::-webkit-scrollbar,
+.popup-content::-webkit-scrollbar {
+  width: 8px;
+}
+
+.side-bar::-webkit-scrollbar-track,
+.board-list::-webkit-scrollbar-track,
+.popup-content::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+}
+
+.side-bar::-webkit-scrollbar-thumb,
+.board-list::-webkit-scrollbar-thumb,
+.popup-content::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 10px;
+}
+
+.side-bar::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.5);
+}

@@ -22,7 +22,7 @@ function Board() {
 
     const [isAddingStickyNote, setIsAddingStickyNote] = useState(false);
     const [stickyNoteTextContent, setStickyNoteTextContent] = useState('');
-    const [stickyNoteColor, setStickyNoteColor] = useState('#ffffff');
+    const [stickyNoteColor, setStickyNoteColor] = useState('#FFFF88 ');
     const [stickyNoteTextColor, setStickyNoteTextColor] = useState('#000000');
     const [stickyNotes, setStickyNotes] = useState([]);
     const [draggingStickyNoteId, setDraggingStickyNoteId] = useState(null);
@@ -304,10 +304,10 @@ function Board() {
                 break;
             case 'venn':
                 ctx.beginPath();
-                ctx.arc(300, 250, 200, 0, 2 * Math.PI);
+                ctx.arc(370, 345, 200, 0, 2 * Math.PI);  // Left circle
                 ctx.stroke();
                 ctx.beginPath();
-                ctx.arc(500, 250, 200, 0, 2 * Math.PI);
+                ctx.arc(610, 345, 200, 0, 2 * Math.PI);  // Right circle
                 ctx.stroke();
                 break;
             case 'quadrants':
@@ -470,7 +470,9 @@ function Board() {
     }
     const handleSaveLibrary = () => {
         if(!boardName.trim()) {
-            alert('Please enter a name for your board');
+            isSavingToLibrary(false);
+            handleCloseSaveLibrary();
+            // alert('Please enter a name for your board');
             return;
         }
         const canvas = canvasRef.current;
@@ -552,156 +554,159 @@ function Board() {
                     </>
                 )}
             </div>
-            <div
-                ref={boardRef}
-                className="canvas"
-                style={{ position: 'relative', width: '800px', height:'500px' }}
-                onMouseMove={determineItemMove} //THIS DOESN'T WORK (it always drags (can't release the items))
-                onMouseUp={determineItemUp}
-                onMouseLeave={determineItemUp}
-            >
-                <canvas 
-                    ref={templateCanvasRef}
-                    width={800}
-                    height={500}
-                    style={{ position: 'absolute', top:0, left:0, zIndex:0 }}
-                />
-                <canvas
-                    ref={canvasRef}
-                    width={800}
-                    height={500}
-                    onMouseDown={startDrawing}
-                    onMouseMove={draw}
-                    onMouseUp={stopDrawing}
-                    onMouseLeave={stopDrawing}
-                    style={{ position: 'absolute', top:0, left:0, zIndex:1, border: '2px solid black', cursor: tool === 'eraser' ? 'cell' : 'crosshair' }}
-                    
-                />
-                {textBoxes.map((box) => (
+            <div className="main-content">
+                <div className="canvas-section">
                     <div
-                        key={box.id}
-                        onMouseDown={(e) => {if (tool !== 'eraser') handleDragTextBox(e, box)}}
-                        style={{
-                            position: 'absolute',
-                            left: box.x,
-                            top: box.y,
-                            zIndex: 10,
-                            padding: '1px 5px',
-                            background: 'transparent',
-                            border: '1px dashed gray',
-                            cursor: 'move',
-                            userSelect: 'none',
-                            color: box.textColor,
-                            fontSize: `${box.fontSize}px`,
-                            cursor: tool === 'eraser' ? 'default' : 'move',
-                        }}
+                        ref={boardRef}
+                        className="canvas"
+                        style={{ position: 'relative', width: '980px', height:'690px' }}
+                        onMouseMove={determineItemMove} //THIS DOESN'T WORK (it always drags (can't release the items))
+                        onMouseUp={determineItemUp}
+                        onMouseLeave={determineItemUp}
                     >
-                        {tool === 'eraser' && (
-                            <button
-                                onClick={() => setTextBoxes(prev => prev.filter(b => b.id  !== box.id))}
-                                style={{
-                                    position:'absolute',
-                                    top:'-10px',
-                                    right:'-10px',
-                                    width:'20px',
-                                    height:'20px',
-                                    background:'#ff6b6b',
-                                    color:'white',
-                                    border: 'none',
-                                    borderRadius: '50%',
-                                    cursor:'pointer',
-                                    fontSize:'12px',
-                                    padding:0,
-                                    fontWeight:'bold',
-                                    zIndex:1000
-                                }}
-                            >
-                                x
-                            </button>
-                        )}
-                        {box.text}
-                    </div>
-                ))}
-                {stickyNotes.map((note) => ( 
-                    <div
-                        key={note.id}
-                        onMouseDown={(e) => { if (tool !== 'eraser') handleDragStickyNote(e, note)}}
-                        style={{
-                            position: 'absolute',
-                            left: note.x,
-                            top: note.y,
-                            zIndex: 10,
-                            padding: '10px',
-                            background: note.color,
-                            color: note.textColor,
-                            cursor: tool === 'eraser' ? 'default' : 'move',
-                            userSelect: 'none',
-                            fontSize: `${note.fontSize}px`,
-                            width: '150px',
-                            height: '150px',
-                            boxShadow: '2px 2px 8px rgba(0,0,0,0.2)',
-                            overflow: 'auto',         
-                            wordWrap: 'break-word'
-                        }}
-                    >
-                        {tool === 'eraser' && (
-                            <button
-                                onClick={() => setStickyNotes(prev => prev.filter(n => n.id !== note.id))}
+                        <canvas 
+                            ref={templateCanvasRef}
+                            width={980}
+                            height={690}
+                            style={{ position: 'absolute', top:0, left:0, zIndex:0 }}
+                        />
+                        <canvas
+                            ref={canvasRef}
+                            width={980}
+                            height={690}
+                            onMouseDown={startDrawing}
+                            onMouseMove={draw}
+                            onMouseUp={stopDrawing}
+                            onMouseLeave={stopDrawing}
+                            style={{ position: 'absolute', top:0, left:0, zIndex:1, borderLeft: '1px solid black', borderRight:'2px solid black', borderTop:'2px solid black', borderBottom: '2px solid black', cursor: tool === 'eraser' ? 'cell' : 'crosshair' }}
+                            
+                        />
+                        {textBoxes.map((box) => (
+                            <div
+                                key={box.id}
+                                onMouseDown={(e) => {if (tool !== 'eraser') handleDragTextBox(e, box)}}
                                 style={{
                                     position: 'absolute',
-                                    top: '2px',
-                                    right: '2px',
-                                    width: '20px',
-                                    height: '20px',
-                                    background: '#ff6b6b',
-                                    color: 'white',
-                                    border: 'none',
-                                    borderRadius: '50%',
-                                    cursor: 'pointer',
-                                    fontSize: '12px',
-                                    padding: 0,
-                                    fontWeight: 'bold',
-                                    zIndex: 1000
+                                    left: box.x,
+                                    top: box.y,
+                                    zIndex: 10,
+                                    padding: '1px 5px',
+                                    background: 'transparent',
+                                    border: '1px dashed gray',
+                                    userSelect: 'none',
+                                    color: box.textColor,
+                                    fontSize: `${box.fontSize}px`,
+                                    cursor: tool === 'eraser' ? 'default' : 'move',
                                 }}
                             >
-                                x
-                            </button>
+                                {tool === 'eraser' && (
+                                    <button
+                                        onClick={() => setTextBoxes(prev => prev.filter(b => b.id  !== box.id))}
+                                        style={{
+                                            position:'absolute',
+                                            top:'-10px',
+                                            right:'-10px',
+                                            width:'20px',
+                                            height:'20px',
+                                            background:'#ff6b6b',
+                                            color:'white',
+                                            border: 'none',
+                                            borderRadius: '50%',
+                                            cursor:'pointer',
+                                            fontSize:'12px',
+                                            padding:0,
+                                            fontWeight:'bold',
+                                            zIndex:1000
+                                        }}
+                                    >
+                                        x
+                                    </button>
+                                )}
+                                {box.text}
+                            </div>
+                        ))}
+                        {stickyNotes.map((note) => ( 
+                            <div
+                                key={note.id}
+                                onMouseDown={(e) => { if (tool !== 'eraser') handleDragStickyNote(e, note)}}
+                                style={{
+                                    position: 'absolute',
+                                    left: note.x,
+                                    top: note.y,
+                                    zIndex: 10,
+                                    padding: '10px',
+                                    background: note.color,
+                                    color: note.textColor,
+                                    cursor: tool === 'eraser' ? 'default' : 'move',
+                                    userSelect: 'none',
+                                    fontSize: `${note.fontSize}px`,
+                                    width: '150px',
+                                    height: '150px',
+                                    boxShadow: '2px 2px 8px rgba(0,0,0,0.2)',
+                                    overflow: 'auto',         
+                                    wordWrap: 'break-word'
+                                }}
+                            >
+                                {tool === 'eraser' && (
+                                    <button
+                                        onClick={() => setStickyNotes(prev => prev.filter(n => n.id !== note.id))}
+                                        style={{
+                                            position: 'absolute',
+                                            top: '2px',
+                                            right: '2px',
+                                            width: '20px',
+                                            height: '20px',
+                                            background: '#ff6b6b',
+                                            color: 'white',
+                                            border: 'none',
+                                            borderRadius: '50%',
+                                            cursor: 'pointer',
+                                            fontSize: '12px',
+                                            padding: 0,
+                                            fontWeight: 'bold',
+                                            zIndex: 1000
+                                        }}
+                                    >
+                                        x
+                                    </button>
+                                )}
+                                {note.text}
+                            </div>
+                        ))}
+                    </div>
+                </div>
+                <div className="side-bar">
+                    <div className="btnGroups">
+                        <div className="designBtns">
+                            <button onClick={handleMarker}>Marker</button>
+                            <button onClick={handleTextBox}>Text Box</button>
+                            <button onClick={handleStickyNote}>Sticky Note</button>
+                            <button onClick={handleTemplate}>Use Template</button>
+                        </div>
+                        <div className="eraseBtns">
+                            <button onClick={handleEraser}>Eraser</button>
+                            <button onClick={handleClearBoard}>Clear Board</button>
+                        </div>
+                        <div className="downloadBtns">
+                            <button onClick={handleOpenDownload}>Download</button>
+                            <button onClick={handleOpenUpload}>Upload</button>
+                            {/*this thing is hidden and for the upload operation */}
+                            <input 
+                                type="file" 
+                                ref={fileInputRef}
+                                accept=".json"
+                                onChange={handleUpload}
+                                style={{ display: 'none' }}
+                            />
+                        </div>
+                        {loggedIn && (
+                            <div className="libraryBtns">
+                                <button onClick={handleOpenSaveToLibrary}>Save to Library</button>
+                                <button onClick={handleOpenLibrary}>Upload from Library</button>
+                            </div>
                         )}
-                        {note.text}
                     </div>
-                ))}
-            </div>
-            <div className="btnGroups">
-                <div className="designBtns">
-                    <button onClick={handleMarker}>Marker</button>
-                    <button onClick={handleTextBox}>Text Box</button>
-                    <button onClick={handleStickyNote}>Sticky Note</button>
                 </div>
-                <div className="eraseBtns">
-                    <button onClick={handleEraser}>Eraser</button>
-                    <button onClick={handleClearBoard}>Clear Board</button>
-                </div>
-                <div className="templateBtns">
-                    <button onClick={handleTemplate}>Use Template</button>
-                    <button onClick={handleOpenUpload}>Upload</button>
-                    {/*this thing is hidden and for the upload operation */}
-                    <input 
-                        type="file" 
-                        ref={fileInputRef}
-                        accept=".json"
-                        onChange={handleUpload}
-                        style={{ display: 'none' }}
-                    />
-                </div>
-                <div className="saveBtn">
-                    <button onClick={handleOpenDownload}>Download</button>
-                </div>
-                {loggedIn && (
-                    <div className="libraryBtns">
-                        <button onClick={handleOpenLibrary}>Upload from Library</button>
-                        <button onClick={handleOpenSaveToLibrary}>Save to Library</button>
-                    </div>
-                )}
             </div>
             {markerEnabled && (
                 <div className="popup-overlay" onClick={closeMarkerPopup}>
