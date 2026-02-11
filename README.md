@@ -25,7 +25,7 @@ I got this idea as I finished writing the first draft of my new book (that I am 
 * Getting the image stuff to turn into a link for download
 * Getting the backend to work (I was mostly using backend code from previus projects as reference but it didn't work)
 * Helping me brainstorm how the eraser feature can delete text boxes and sticky notes
-* CSS for the board page (but I made many edits to it myself)
+* CSS (but I made many edits to it myself)
 
 ## Contact
 * **Portfolio:** AudreyBurrell.github.io

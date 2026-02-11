@@ -1,4 +1,4 @@
-import './LoginCreate.css'
+import './LoginCreate.css';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
@@ -34,7 +34,7 @@ function Login() {
     }
 
     return (
-        <div className="loginCard">
+        <div className="background-card">
            <p>Login to Brainstorm Board</p>
            <div className="formArea">
                 <label htmlFor="username">Username:</label>
@@ -42,8 +42,10 @@ function Login() {
                 <label htmlFor="password">Password:</label>
                 <input type="password" id="password" name="password" required value={password} onChange={(e) => setPassword(e.target.value)} />
            </div>
-           <button className="loginBtn" onClick={handleLogin}>Login</button>
-           <button className="createAccountBtn" onClick={handleCreateAccount}>Create Account</button>
+           <div className="btnArea">
+                <button className="mainBtn" onClick={handleLogin}>Login</button>
+                <button className="otherBtn" onClick={handleCreateAccount}>Create Account</button>
+           </div>
         </div>
     )
 }
