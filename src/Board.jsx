@@ -22,7 +22,7 @@ function Board() {
 
     const [isAddingStickyNote, setIsAddingStickyNote] = useState(false);
     const [stickyNoteTextContent, setStickyNoteTextContent] = useState('');
-    const [stickyNoteColor, setStickyNoteColor] = useState('#FFFF88 ');
+    const [stickyNoteColor, setStickyNoteColor] = useState('#FFFF88');
     const [stickyNoteTextColor, setStickyNoteTextColor] = useState('#000000');
     const [stickyNotes, setStickyNotes] = useState([]);
     const [draggingStickyNoteId, setDraggingStickyNoteId] = useState(null);
@@ -560,7 +560,7 @@ function Board() {
                         ref={boardRef}
                         className="canvas"
                         style={{ position: 'relative', width: '980px', height:'690px' }}
-                        onMouseMove={determineItemMove} //THIS DOESN'T WORK (it always drags (can't release the items))
+                        onMouseMove={determineItemMove} 
                         onMouseUp={determineItemUp}
                         onMouseLeave={determineItemUp}
                     >
