@@ -678,18 +678,18 @@ function Board() {
                 <div className="side-bar">
                     <div className="btnGroups">
                         <div className="designBtns">
-                            <button onClick={handleMarker}>Marker</button>
-                            <button onClick={handleTextBox}>Text Box</button>
-                            <button onClick={handleStickyNote}>Sticky Note</button>
-                            <button onClick={handleTemplate}>Use Template</button>
+                            <button onClick={handleMarker} className="toolBtn">Marker</button>
+                            <button onClick={handleTextBox} className="toolBtn">Text Box</button>
+                            <button onClick={handleStickyNote} className="toolBtn">Sticky Note</button>
+                            <button onClick={handleTemplate} className="toolBtn">Use Template</button>
                         </div>
                         <div className="eraseBtns">
-                            <button onClick={handleEraser}>Eraser</button>
-                            <button onClick={handleClearBoard}>Clear Board</button>
+                            <button onClick={handleEraser} className="dangerBtn">Eraser</button>
+                            <button onClick={handleClearBoard} className="dangerBtn">Clear Board</button>
                         </div>
                         <div className="downloadBtns">
-                            <button onClick={handleOpenDownload}>Download</button>
-                            <button onClick={handleOpenUpload}>Upload</button>
+                            <button onClick={handleOpenDownload} className="fileBtn">Download</button>
+                            <button onClick={handleOpenUpload} className="fileBtn">Upload</button>
                             {/*this thing is hidden and for the upload operation */}
                             <input 
                                 type="file" 
@@ -701,8 +701,8 @@ function Board() {
                         </div>
                         {loggedIn && (
                             <div className="libraryBtns">
-                                <button onClick={handleOpenSaveToLibrary}>Save to Library</button>
-                                <button onClick={handleOpenLibrary}>Upload from Library</button>
+                                <button onClick={handleOpenSaveToLibrary} className="libraryBtn">Save to Library</button>
+                                <button onClick={handleOpenLibrary} className="libraryBtn">Upload from Library</button>
                             </div>
                         )}
                     </div>

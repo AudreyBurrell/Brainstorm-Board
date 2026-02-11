@@ -1,4 +1,4 @@
-//css import here
+import './LoginCreate.css'
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
