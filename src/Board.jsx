@@ -8,6 +8,7 @@ function Board() {
     const [penSize, setPenSize] = useState(5);
     const [markerEnabled, setMarkerEnabled] = useState(false);
     const [isDrawing, setIsDrawing] = useState(false);
+    const [markerPopupOpen, setMarkerPopupOpen] = useState(false);
     const [tool, setTool] = useState('pen');
 
     const [eraserEnabled, setEraserEnabled] = useState(false);
@@ -40,9 +41,12 @@ function Board() {
         //displays where the user can choose their color and size
         //only then can they actually draw on the board
         setMarkerEnabled(true); //WHEN THE USER HITS ANYTHING ELSE = FALSE
+        setMarkerPopupOpen(true);
+
     }
     const closeMarkerPopup = () => {
-        setMarkerEnabled(false);
+
+        closeEverything();
     }
     //for the drawing
     const getMousePos = (e, canvas) => {
@@ -89,6 +93,7 @@ function Board() {
         setTool('eraser');
         setMarkerEnabled(true);
         setEraserEnabled(true);
+        setMarkerPopupOpen(true);
     }
     const handleClearBoard = () => {
         //erases EVERYTHING, but for now just the marker (because that's what I have coded up)
@@ -249,7 +254,8 @@ function Board() {
         setIsAddingStickyNote(false);
         setIsDrawing(false);
         setIsAddingTextBox(false);
-        setMarkerEnabled(false);
+        //setMarkerEnabled(false);
+        setMarkerPopupOpen(false);
         setDownloadSelected(false);
         setUploadSelected(false);
         isLibraryOpen(false);
@@ -708,7 +714,7 @@ function Board() {
                     </div>
                 </div>
             </div>
-            {markerEnabled && (
+            {markerPopupOpen && (
                 <div className="popup-overlay" onClick={closeMarkerPopup}>
                     <div className="popup-content" onClick={(e) => e.stopPropagation()}>
                         {eraserEnabled ? (
